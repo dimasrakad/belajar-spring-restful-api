@@ -11,10 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import programmerzamannow.restful.entity.Contact;
 import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.UpdateContactRequest;
-import programmerzamannow.restful.model.ContactResponse;
-import programmerzamannow.restful.model.CreateContactRequest;
 import programmerzamannow.restful.model.WebResponse;
+import programmerzamannow.restful.model.contact.ContactResponse;
+import programmerzamannow.restful.model.contact.CreateContactRequest;
+import programmerzamannow.restful.model.contact.UpdateContactRequest;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 import programmerzamannow.restful.repository.UserRepository;
@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,8 +59,9 @@ public class ContactControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
         }
 
@@ -72,7 +74,7 @@ public class ContactControllerTest {
                 request.setPhone("+628123456789");
 
                 mockMvc.perform(
-                                post("/api/contact")
+                                post("/contact")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -103,7 +105,7 @@ public class ContactControllerTest {
                 request.setFirstName("test");
 
                 mockMvc.perform(
-                                post("/api/contact")
+                                post("/contact")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -130,19 +132,11 @@ public class ContactControllerTest {
 
         @Test
         void testCreateFailedInvalidToken() throws Exception {
-                User user = new User();
-                user.setUsername("test");
-                user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
-                user.setName("Test");
-                user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
-                userRepository.save(user);
-
                 CreateContactRequest request = new CreateContactRequest();
                 request.setFirstName("test");
 
                 mockMvc.perform(
-                                post("/api/contact")
+                                post("/contact")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -168,7 +162,7 @@ public class ContactControllerTest {
                 request.setPhone("628123456789");
 
                 mockMvc.perform(
-                                post("/api/contact")
+                                post("/contact")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -199,7 +193,7 @@ public class ContactControllerTest {
                 contactRepository.save(contact);
 
                 mockMvc.perform(
-                                get("/api/contact/" + contact.getId())
+                                get("/contact/" + contact.getId())
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isOk())
                                 .andDo(result -> {
@@ -236,7 +230,7 @@ public class ContactControllerTest {
                 contactRepository.save(contact);
 
                 mockMvc.perform(
-                                get("/api/contact/test")
+                                get("/contact/test")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isNotFound())
                                 .andDo(result -> {
@@ -270,7 +264,7 @@ public class ContactControllerTest {
                 request.setPhone("+628123456780");
 
                 mockMvc.perform(
-                                patch("/api/contact/" + contact.getId())
+                                patch("/contact/" + contact.getId())
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -316,7 +310,7 @@ public class ContactControllerTest {
                 request.setFirstName("test2");
 
                 mockMvc.perform(
-                                patch("/api/contact/" + contact.getId())
+                                patch("/contact/" + contact.getId())
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -365,7 +359,7 @@ public class ContactControllerTest {
                 request.setPhone("628123456780");
 
                 mockMvc.perform(
-                                patch("/api/contact/" + contact.getId())
+                                patch("/contact/" + contact.getId())
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -405,7 +399,7 @@ public class ContactControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact")
+                                get("/contact")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isOk())
                                 .andDo(result -> {
@@ -441,7 +435,7 @@ public class ContactControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact")
+                                get("/contact")
                                                 .header("X-API-TOKEN", "test")
                                                 .param("name", "test1")
                                                 .param("page", "1")
@@ -483,7 +477,7 @@ public class ContactControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact")
+                                get("/contact")
                                                 .header("X-API-TOKEN", "test")
                                                 .param("name", "test1")
                                                 .param("sortDirection", "test"))
@@ -515,7 +509,7 @@ public class ContactControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact")
+                                get("/contact")
                                                 .header("X-API-TOKEN", "test")
                                                 .param("name", "test0"))
                                 .andExpectAll(status().isOk())
@@ -550,7 +544,7 @@ public class ContactControllerTest {
                 contactRepository.save(contact);
 
                 mockMvc.perform(
-                                delete("/api/contact/" + contact.getId())
+                                delete("/contact/" + contact.getId())
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isOk())
                                 .andDo(result -> {
@@ -581,7 +575,7 @@ public class ContactControllerTest {
                 contactRepository.save(contact);
 
                 mockMvc.perform(
-                                delete("/api/contact/test")
+                                delete("/contact/test")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isNotFound())
                                 .andDo(result -> {

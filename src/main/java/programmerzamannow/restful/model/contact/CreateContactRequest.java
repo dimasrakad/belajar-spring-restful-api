@@ -1,6 +1,8 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.contact;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,24 +13,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateAddressRequest {
+public class CreateContactRequest {
     @NotBlank
     @Size(max = 100)
-    private String street;
+    private String firstName;
 
-    @NotBlank
     @Size(max = 100)
-    private String city;
+    private String lastName;
 
-    @NotBlank
+    @Email
     @Size(max = 100)
-    private String province;
+    private String email;
 
-    @NotBlank
+    @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
     @Size(max = 100)
-    private String country;
-
-    @NotBlank
-    @Size(max = 100)
-    private String postalCode;
+    private String phone;
 }

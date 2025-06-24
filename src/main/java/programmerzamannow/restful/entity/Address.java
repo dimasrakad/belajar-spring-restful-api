@@ -25,14 +25,18 @@ public class Address {
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
     private Contact contact;
 
+    @Column(nullable = false)
     private String street;
 
+    @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
     private String province;
     
+    @Column(nullable = false)
     private String country;
 
-    @Column(name = "postal_code")
+    @Column(name = "postal_code", nullable = false)
     private String postalCode;
 }

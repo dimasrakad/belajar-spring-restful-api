@@ -12,9 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import programmerzamannow.restful.entity.Address;
 import programmerzamannow.restful.entity.Contact;
 import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.CreateAddressRequest;
-import programmerzamannow.restful.model.AddressResponse;
 import programmerzamannow.restful.model.WebResponse;
+import programmerzamannow.restful.model.address.AddressResponse;
+import programmerzamannow.restful.model.address.CreateAddressRequest;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 import programmerzamannow.restful.repository.UserRepository;
@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,8 +59,9 @@ public class AddressControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 Contact contact = new Contact();
@@ -82,7 +84,7 @@ public class AddressControllerTest {
                 request.setPostalCode("12345");
 
                 mockMvc.perform(
-                                post("/api/contact/test/address")
+                                post("/contact/test/address")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -117,7 +119,7 @@ public class AddressControllerTest {
                 request.setPostalCode("12345");
 
                 mockMvc.perform(
-                                post("/api/contact/test/address")
+                                post("/contact/test/address")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request)))
@@ -141,7 +143,7 @@ public class AddressControllerTest {
                 request.setCountry("test");
 
                 mockMvc.perform(
-                                post("/api/contact/test2/address")
+                                post("/contact/test2/address")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -167,7 +169,7 @@ public class AddressControllerTest {
                 request.setPostalCode("12345");
 
                 mockMvc.perform(
-                                post("/api/contact/test2/address")
+                                post("/contact/test2/address")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -198,7 +200,7 @@ public class AddressControllerTest {
                 addressRepository.save(address);
 
                 mockMvc.perform(
-                                get("/api/contact/test/address/" + address.getId())
+                                get("/contact/test/address/" + address.getId())
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isOk())
                                 .andDo(result -> {
@@ -237,7 +239,7 @@ public class AddressControllerTest {
                 addressRepository.save(address);
 
                 mockMvc.perform(
-                                get("/api/contact/test/address/test")
+                                get("/contact/test/address/test")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isNotFound())
                                 .andDo(result -> {
@@ -267,7 +269,7 @@ public class AddressControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact/test/address")
+                                get("/contact/test/address")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isOk())
                                 .andDo(result -> {
@@ -300,7 +302,7 @@ public class AddressControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact/test/address")
+                                get("/contact/test/address")
                                                 .header("X-API-TOKEN", "test")
                                                 .param("sortBy", "street")
                                                 .param("sortDirection", "desc"))
@@ -336,7 +338,7 @@ public class AddressControllerTest {
                 }
 
                 mockMvc.perform(
-                                get("/api/contact/test/address")
+                                get("/contact/test/address")
                                                 .header("X-API-TOKEN", "test")
                                                 .param("sortBy", "street")
                                                 .param("sortDirection", "test"))
@@ -373,7 +375,7 @@ public class AddressControllerTest {
                 request.setPostalCode("12345");
 
                 mockMvc.perform(
-                                post("/api/contact/test/address")
+                                post("/contact/test/address")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -419,7 +421,7 @@ public class AddressControllerTest {
                 request.setCountry("test2");
 
                 mockMvc.perform(
-                                post("/api/contact/test/address")
+                                post("/contact/test/address")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -465,7 +467,7 @@ public class AddressControllerTest {
                 request.setPostalCode("123456");
 
                 mockMvc.perform(
-                                patch("/api/contact/test/address/test")
+                                patch("/contact/test/address/test")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request))
@@ -504,7 +506,7 @@ public class AddressControllerTest {
                 addressRepository.save(address);
 
                 mockMvc.perform(
-                                delete("/api/contact/test/address/" + address.getId())
+                                delete("/contact/test/address/" + address.getId())
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isOk())
                                 .andDo(result -> {
@@ -535,7 +537,7 @@ public class AddressControllerTest {
                 addressRepository.save(address);
 
                 mockMvc.perform(
-                                delete("/api/contact/test/address/test")
+                                delete("/contact/test/address/test")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(status().isNotFound())
                                 .andDo(result -> {

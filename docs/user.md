@@ -10,7 +10,8 @@ Request Body:
 {
   "username": "username",
   "password": "password",
-  "name": "name"
+  "name": "name",
+  "email": "email"
 }
 ```
 
@@ -38,7 +39,7 @@ Request Body:
 
 ```json
 {
-  "username": "username",
+  "username/email": "username/email",
   "password": "password"
 }
 ```
@@ -54,11 +55,69 @@ Response Body (Success):
 }
 ```
 
-Response Body (Failed, 401):
+Response Body (Failed):
 
 ```json
 {
-  "error": "Username or password is wrong"
+  "error": "Error message"
+}
+```
+
+## Request Reset Password
+
+Endpoint: POST /api/auth/request-reset-password
+
+Request Body:
+
+```json
+{
+  "email": "email"
+}
+```
+
+Response Body (Success):
+
+```json
+{
+  "data": null
+}
+```
+
+Response Body (Failed):
+
+```json
+{
+  "error": "Error message"
+}
+```
+
+## Reset Password
+
+Endpoint: POST /api/auth/reset-password
+
+Request Body:
+
+```json
+{
+  "token": "token",
+  "newPassword": "newPassword",
+  "confirmPassword": "confirmPassword"
+}
+```
+
+Response Body (Success):
+
+```json
+{
+  "data": null
+}
+```
+
+Response Body (Failed):
+
+```json
+{
+  "error": "Error message"
 }
 ```
 

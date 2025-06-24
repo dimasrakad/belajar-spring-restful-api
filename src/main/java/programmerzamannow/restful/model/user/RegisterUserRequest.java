@@ -1,8 +1,7 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,19 +12,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateContactRequest {
+public class RegisterUserRequest {
     @NotBlank
     @Size(max = 100)
-    private String firstName;
+    private String username;
 
+    @NotBlank
     @Size(max = 100)
-    private String lastName;
+    private String password;
 
+    @NotBlank
+    @Size(max = 100)
+    private String name;
+
+    @NotBlank
+    @Size(max = 100)
     @Email
-    @Size(max = 100)
     private String email;
-
-    @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
-    @Size(max = 100)
-    private String phone;
 }

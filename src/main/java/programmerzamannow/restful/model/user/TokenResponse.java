@@ -1,4 +1,4 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
-    private String username;
-    private String name;
+public class TokenResponse {
+    private String token;
+    private Long expiredAt;
 }

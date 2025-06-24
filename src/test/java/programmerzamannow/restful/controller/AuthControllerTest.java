@@ -12,11 +12,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.LoginUserRequest;
-import programmerzamannow.restful.model.RegisterUserRequest;
-import programmerzamannow.restful.model.TokenResponse;
-import programmerzamannow.restful.model.UserResponse;
 import programmerzamannow.restful.model.WebResponse;
+import programmerzamannow.restful.model.user.LoginUserRequest;
+import programmerzamannow.restful.model.user.RegisterUserRequest;
+import programmerzamannow.restful.model.user.TokenResponse;
+import programmerzamannow.restful.model.user.UserResponse;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 import programmerzamannow.restful.repository.UserRepository;
@@ -25,6 +25,8 @@ import programmerzamannow.restful.security.BCrypt;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.time.Instant;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,9 +59,10 @@ public class AuthControllerTest {
                 request.setUsername("test");
                 request.setPassword("test");
                 request.setName("Test");
+                request.setEmail("test@test.com");
 
                 mockMvc.perform(
-                                post("/api/auth/register")
+                                post("/auth/register")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request)))
@@ -82,9 +85,10 @@ public class AuthControllerTest {
                 request.setUsername("");
                 request.setPassword("");
                 request.setName("");
+                request.setEmail("");
 
                 mockMvc.perform(
-                                post("/api/auth/register")
+                                post("/auth/register")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request)))
@@ -107,15 +111,17 @@ public class AuthControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 userRepository.save(user);
 
                 RegisterUserRequest request = new RegisterUserRequest();
                 request.setUsername("test");
                 request.setPassword("test");
                 request.setName("Test");
+                request.setEmail("test@test.com");
 
                 mockMvc.perform(
-                                post("/api/auth/register")
+                                post("/auth/register")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request)))
@@ -135,11 +141,11 @@ public class AuthControllerTest {
         @Test
         void testLoginFailedUserNotFound() throws Exception {
                 LoginUserRequest request = new LoginUserRequest();
-                request.setUsername("test");
+                request.setUsernameOrEmail("test");
                 request.setPassword("test");
 
                 mockMvc.perform(
-                                post("/api/auth/login")
+                                post("/auth/login")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(request)))
@@ -161,14 +167,15 @@ public class AuthControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 userRepository.save(user);
 
                 LoginUserRequest loginRequest = new LoginUserRequest();
-                loginRequest.setUsername("test");
+                loginRequest.setUsernameOrEmail("test");
                 loginRequest.setPassword("test2");
 
                 mockMvc.perform(
-                                post("/api/auth/login")
+                                post("/auth/login")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(loginRequest)))
@@ -185,19 +192,56 @@ public class AuthControllerTest {
         }
 
         @Test
-        void testLoginSuccess() throws Exception {
+        void testLoginSuccessUsingUsername() throws Exception {
                 User user = new User();
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 userRepository.save(user);
 
                 LoginUserRequest loginRequest = new LoginUserRequest();
-                loginRequest.setUsername("test");
+                loginRequest.setUsernameOrEmail("test");
                 loginRequest.setPassword("test");
 
                 mockMvc.perform(
-                                post("/api/auth/login")
+                                post("/auth/login")
+                                                .accept(MediaType.APPLICATION_JSON)
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(objectMapper.writeValueAsString(loginRequest)))
+                                .andExpectAll(status().isOk())
+                                .andDo(result -> {
+                                        WebResponse<TokenResponse> response = objectMapper.readValue(
+                                                        result.getResponse().getContentAsString(),
+                                                        new TypeReference<>() {
+
+                                                        });
+
+                                        assertNotNull(response.getData().getToken());
+                                        assertNotNull(response.getData().getExpiredAt());
+
+                                        User userDb = userRepository.findById("test").orElse(null);
+                                        assertNotNull(userDb);
+                                        assertEquals(userDb.getToken(), response.getData().getToken());
+                                        assertEquals(userDb.getTokenExpiredAt(), response.getData().getExpiredAt());
+                                });
+        }
+
+        @Test
+        void testLoginSuccessUsingEmail() throws Exception {
+                User user = new User();
+                user.setUsername("test");
+                user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
+                user.setName("Test");
+                user.setEmail("test@test.com");
+                userRepository.save(user);
+
+                LoginUserRequest loginRequest = new LoginUserRequest();
+                loginRequest.setUsernameOrEmail("test@test.com");
+                loginRequest.setPassword("test");
+
+                mockMvc.perform(
+                                post("/auth/login")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(objectMapper.writeValueAsString(loginRequest)))
@@ -225,12 +269,13 @@ public class AuthControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 mockMvc.perform(
-                                get("/api/auth/logout")
+                                get("/auth/logout")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(
                                                 status().isOk())
@@ -256,12 +301,13 @@ public class AuthControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 mockMvc.perform(
-                                get("/api/auth/logout")
+                                get("/auth/logout")
                                                 .header("X-API-TOKEN", "test2"))
                                 .andExpectAll(
                                                 status().isUnauthorized())

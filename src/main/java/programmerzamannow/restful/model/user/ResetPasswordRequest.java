@@ -1,4 +1,4 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginUserRequest {
+public class ResetPasswordRequest {
+    @NotBlank
+    private String token;
+    
     @NotBlank
     @Size(max = 100)
-    private String username;
+    private String newPassword;
 
     @NotBlank
     @Size(max = 100)
-    private String password;
+    private String confirmPassword;
 }

@@ -1,4 +1,4 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

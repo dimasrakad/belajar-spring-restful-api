@@ -1,5 +1,7 @@
 package programmerzamannow.restful.resolver;
 
+import java.time.Instant;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         User user = userRepository.findFirstByToken(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No token provided"));
 
-        if (user.getTokenExpiredAt() < System.currentTimeMillis()) {
+        if (user.getTokenExpiredAt() < Instant.now().toEpochMilli()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
         }
 

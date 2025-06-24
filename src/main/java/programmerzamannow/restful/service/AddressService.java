@@ -1,25 +1,22 @@
 package programmerzamannow.restful.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import programmerzamannow.restful.entity.Address;
 import programmerzamannow.restful.entity.Contact;
 import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.CreateAddressRequest;
-import programmerzamannow.restful.model.UpdateAddressRequest;
-import programmerzamannow.restful.model.AddressResponse;
+import programmerzamannow.restful.model.address.AddressResponse;
+import programmerzamannow.restful.model.address.CreateAddressRequest;
+import programmerzamannow.restful.model.address.UpdateAddressRequest;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.UpdateUserRequest;
-import programmerzamannow.restful.model.UserResponse;
+import programmerzamannow.restful.model.user.UpdateUserRequest;
+import programmerzamannow.restful.model.user.UserResponse;
 import programmerzamannow.restful.repository.UserRepository;
 import programmerzamannow.restful.security.BCrypt;
 

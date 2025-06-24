@@ -1,5 +1,6 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.user;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,19 +11,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateAddressRequest {
+public class UpdateUserRequest {
     @Size(max = 100)
-    private String street;
+    private String name;
+    
+    @Size(max = 100)
+    private String password;
 
     @Size(max = 100)
-    private String city;
-
-    @Size(max = 100)
-    private String province;
-
-    @Size(max = 100)
-    private String country;
-
-    @Size(max = 100)
-    private String postalCode;
+    @Email
+    private String email;
 }

@@ -22,15 +22,20 @@ public class User {
     @Id
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String name;
 
-    private String token;
+    @Column(nullable = false)
+    private String email;
 
+    private String token;
+    
     @Column(name = "token_expired_at")
     private Long tokenExpiredAt;
-
+    
     @OneToMany(mappedBy = "user")
     private List<Contact> contacts;
 }

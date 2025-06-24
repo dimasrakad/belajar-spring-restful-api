@@ -15,10 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Instant;
+
 import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.UpdateUserRequest;
-import programmerzamannow.restful.model.UserResponse;
 import programmerzamannow.restful.model.WebResponse;
+import programmerzamannow.restful.model.user.UpdateUserRequest;
+import programmerzamannow.restful.model.user.UserResponse;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 import programmerzamannow.restful.repository.UserRepository;
@@ -56,11 +58,12 @@ public class UserControllerTest {
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setEmail("test@test.com");
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 mockMvc.perform(
-                                get("/api/user/current")
+                                get("/user/current")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(
                                                 status().isOk())
@@ -78,7 +81,7 @@ public class UserControllerTest {
         @Test
         void testGetCurrentUserFailedNoToken() throws Exception {
                 mockMvc.perform(
-                                get("/api/user/current"))
+                                get("/user/current"))
                                 .andExpectAll(
                                                 status().isUnauthorized())
                                 .andDo(result -> {
@@ -97,12 +100,13 @@ public class UserControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 mockMvc.perform(
-                                get("/api/user/current")
+                                get("/user/current")
                                                 .header("X-API-TOKEN", "test2"))
                                 .andExpectAll(
                                                 status().isUnauthorized())
@@ -122,12 +126,13 @@ public class UserControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() - 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() - 1000000000L);
                 userRepository.save(user);
 
                 mockMvc.perform(
-                                get("/api/user/current")
+                                get("/user/current")
                                                 .header("X-API-TOKEN", "test"))
                                 .andExpectAll(
                                                 status().isUnauthorized())
@@ -147,8 +152,9 @@ public class UserControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 UpdateUserRequest request = new UpdateUserRequest();
@@ -156,7 +162,7 @@ public class UserControllerTest {
                 request.setPassword("test2");
 
                 mockMvc.perform(
-                                patch("/api/user/current")
+                                patch("/user/current")
                                                 .header("X-API-TOKEN", "test")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
@@ -187,15 +193,16 @@ public class UserControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 UpdateUserRequest request = new UpdateUserRequest();
                 request.setName("Test2");
 
                 mockMvc.perform(
-                                patch("/api/user/current")
+                                patch("/user/current")
                                                 .header("X-API-TOKEN", "test")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)
@@ -226,15 +233,16 @@ public class UserControllerTest {
                 user.setUsername("test");
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
+                user.setEmail("test@test.com");
                 user.setToken("test");
-                user.setTokenExpiredAt(System.currentTimeMillis() + 1000000000L);
+                user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
                 userRepository.save(user);
 
                 UpdateUserRequest request = new UpdateUserRequest();
                 request.setName("Test2");
 
                 mockMvc.perform(
-                                patch("/api/user/current")
+                                patch("/user/current")
                                                 .header("X-API-TOKEN", "test2")
                                                 .accept(MediaType.APPLICATION_JSON)
                                                 .contentType(MediaType.APPLICATION_JSON)

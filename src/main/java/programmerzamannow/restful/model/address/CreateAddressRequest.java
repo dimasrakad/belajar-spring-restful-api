@@ -1,4 +1,4 @@
-package programmerzamannow.restful.model;
+package programmerzamannow.restful.model.address;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,16 +11,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterUserRequest {
+public class CreateAddressRequest {
     @NotBlank
     @Size(max = 100)
-    private String username;
+    private String street;
 
     @NotBlank
     @Size(max = 100)
-    private String password;
+    private String city;
 
     @NotBlank
     @Size(max = 100)
-    private String name;
+    private String province;
+
+    @NotBlank
+    @Size(max = 100)
+    private String country;
+
+    @NotBlank
+    @Size(max = 100)
+    private String postalCode;
 }
