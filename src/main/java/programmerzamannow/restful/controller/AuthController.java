@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -28,6 +30,14 @@ public class AuthController {
 
         return WebResponse.<String>builder().data(null).build();
     }
+
+    @GetMapping("/verify")
+    public WebResponse<String> verifyEmail(@RequestParam String token) {
+        authService.verifyEmail(token);
+        
+        return WebResponse.<String>builder().data(null).build();
+    }
+    
 
     @PostMapping("/login")
     public WebResponse<TokenResponse> login(@RequestBody LoginUserRequest request) {

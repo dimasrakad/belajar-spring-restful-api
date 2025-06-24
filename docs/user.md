@@ -31,6 +31,30 @@ Response Body (Failed):
 }
 ```
 
+## Verify Email
+
+Endpoint: GET /api/auth/verify
+
+Query Param:
+
+- token: string, token from email
+
+Response Body (Success):
+
+```json
+{
+  "data": null
+}
+```
+
+Response Body (Failed):
+
+```json
+{
+  "error": "Error message"
+}
+```
+
 ## Login User
 
 Endpoint: POST /api/auth/login

@@ -10,14 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
-import programmerzamannow.restful.entity.PasswordReset;
+import programmerzamannow.restful.entity.UserToken;
+import programmerzamannow.restful.enums.TokenType;
 import programmerzamannow.restful.entity.User;
 import programmerzamannow.restful.model.user.LoginUserRequest;
 import programmerzamannow.restful.model.user.RegisterUserRequest;
 import programmerzamannow.restful.model.user.RequestResetPasswordRequest;
 import programmerzamannow.restful.model.user.ResetPasswordRequest;
 import programmerzamannow.restful.model.user.TokenResponse;
-import programmerzamannow.restful.repository.PasswordResetRepository;
+import programmerzamannow.restful.repository.UserTokenRepository;
 import programmerzamannow.restful.repository.UserRepository;
 import programmerzamannow.restful.security.BCrypt;
 
@@ -27,7 +28,7 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordResetRepository passwordResetRepository;
+    private UserTokenRepository userTokenRepository;
 
     @Autowired
     private ValidationService validationService;
@@ -51,7 +52,36 @@ public class AuthService {
         user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         user.setName(request.getName());
         user.setEmail(request.getEmail());
+        user.setIsVerified(false);
 
+        userRepository.save(user);
+
+        UserToken userToken = new UserToken();
+        userToken.setUser(user);
+        userToken.setTokenType(TokenType.EMAIL_VERIFICATION);
+        userToken.setToken(UUID.randomUUID().toString());
+        userToken.setExpiredAt(next30Minutes());
+        userTokenRepository.save(userToken);
+
+        String verificationLink = frontendAddress + "/verify?token=" + userToken.getToken();
+        emailService.sendVerification(user.getEmail(), verificationLink);
+    }
+
+    @Transactional
+    public void verifyEmail(String token) {
+        UserToken userToken = userTokenRepository.findFirstByTokenTypeAndToken(TokenType.EMAIL_VERIFICATION, token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is invalid"));
+        
+        if (userToken.getExpiredAt() < Instant.now().toEpochMilli()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is expired");
+        }
+
+        userToken.setToken(null);
+        userToken.setExpiredAt(null);
+        userTokenRepository.save(userToken);
+
+        User user = userToken.getUser();
+        user.setIsVerified(true);
         userRepository.save(user);
     }
 
@@ -85,20 +115,20 @@ public class AuthService {
         User user = userRepository.findFirstByEmail(request.getEmail()).orElse(null);
 
         if (user != null) {
-            PasswordReset passwordReset = passwordResetRepository.findById(user.getUsername()).orElse(null);
+            UserToken userToken = userTokenRepository.findFirstByUserAndTokenType(user, TokenType.PASSWORD_RESET).orElse(null);
 
-            if (passwordReset == null) {
-                passwordReset = new PasswordReset();
-                // passwordReset.setUsername(user.getUsername());
-                passwordReset.setUser(user);
+            if (userToken == null) {
+                userToken = new UserToken();
+                userToken.setUser(user);
+                userToken.setTokenType(TokenType.PASSWORD_RESET);
             }
 
-            passwordReset.setToken(UUID.randomUUID().toString());
-            passwordReset.setExpiredAt(next30Minutes());
+            userToken.setToken(UUID.randomUUID().toString());
+            userToken.setExpiredAt(next30Minutes());
 
-            passwordResetRepository.save(passwordReset);
+            userTokenRepository.save(userToken);
 
-            String resetLink = frontendAddress + "/auth/reset-password?token=" + passwordReset.getToken();
+            String resetLink = frontendAddress + "/auth/reset-password?token=" + userToken.getToken();
 
             emailService.sendPasswordReset(user.getEmail(), resetLink);
         }
@@ -112,18 +142,18 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New Password and confirm password is not match");
         }
 
-        PasswordReset passwordReset = passwordResetRepository.findFirstByToken(request.getToken())
+        UserToken userToken = userTokenRepository.findFirstByTokenTypeAndToken(TokenType.PASSWORD_RESET, request.getToken())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is invalid"));
 
-        if (passwordReset.getExpiredAt() < Instant.now().toEpochMilli()) {
+        if (userToken.getExpiredAt() < Instant.now().toEpochMilli()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is expired");
         }
 
-        passwordReset.setToken(null);
-        passwordReset.setExpiredAt(null);
-        passwordResetRepository.save(passwordReset);
+        userToken.setToken(null);
+        userToken.setExpiredAt(null);
+        userTokenRepository.save(userToken);
 
-        User user = passwordReset.getUser();
+        User user = userToken.getUser();
         user.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt()));
         userRepository.save(user);
     }

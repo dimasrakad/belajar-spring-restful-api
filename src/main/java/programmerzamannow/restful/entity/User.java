@@ -31,6 +31,9 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column(name = "is_verified", nullable = false)
+    private Boolean isVerified;
+
     private String token;
     
     @Column(name = "token_expired_at")
