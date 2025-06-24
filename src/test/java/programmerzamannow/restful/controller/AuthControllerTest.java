@@ -20,6 +20,7 @@ import programmerzamannow.restful.model.user.UserResponse;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 import programmerzamannow.restful.repository.UserRepository;
+import programmerzamannow.restful.repository.UserTokenRepository;
 import programmerzamannow.restful.security.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +36,9 @@ public class AuthControllerTest {
         private MockMvc mockMvc;
 
         @Autowired
+        private UserTokenRepository userTokenRepository;
+
+        @Autowired
         private AddressRepository addressRepository;
 
         @Autowired
@@ -48,6 +52,7 @@ public class AuthControllerTest {
 
         @BeforeEach
         void setUp() {
+                userTokenRepository.deleteAll();
                 addressRepository.deleteAll();
                 contactRepository.deleteAll();
                 userRepository.deleteAll();
@@ -112,6 +117,7 @@ public class AuthControllerTest {
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
                 user.setEmail("test@test.com");
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 RegisterUserRequest request = new RegisterUserRequest();
@@ -168,6 +174,7 @@ public class AuthControllerTest {
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
                 user.setEmail("test@test.com");
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 LoginUserRequest loginRequest = new LoginUserRequest();
@@ -198,6 +205,7 @@ public class AuthControllerTest {
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
                 user.setEmail("test@test.com");
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 LoginUserRequest loginRequest = new LoginUserRequest();
@@ -234,6 +242,7 @@ public class AuthControllerTest {
                 user.setPassword(BCrypt.hashpw("test", BCrypt.gensalt()));
                 user.setName("Test");
                 user.setEmail("test@test.com");
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 LoginUserRequest loginRequest = new LoginUserRequest();
@@ -272,6 +281,7 @@ public class AuthControllerTest {
                 user.setEmail("test@test.com");
                 user.setToken("test");
                 user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 mockMvc.perform(
@@ -304,6 +314,7 @@ public class AuthControllerTest {
                 user.setEmail("test@test.com");
                 user.setToken("test");
                 user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 mockMvc.perform(

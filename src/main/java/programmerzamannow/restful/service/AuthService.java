@@ -1,6 +1,7 @@
 package programmerzamannow.restful.service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,13 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The username is already exist");
         }
 
-        User user = new User();
+        User user = userRepository.findFirstByEmail(request.getEmail()).orElse(null);
+
+        if (user != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The email is already exist");
+        }
+
+        user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         user.setName(request.getName());

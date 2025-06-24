@@ -18,6 +18,7 @@ import programmerzamannow.restful.model.address.CreateAddressRequest;
 import programmerzamannow.restful.repository.AddressRepository;
 import programmerzamannow.restful.repository.ContactRepository;
 import programmerzamannow.restful.repository.UserRepository;
+import programmerzamannow.restful.repository.UserTokenRepository;
 import programmerzamannow.restful.security.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,6 +39,9 @@ public class AddressControllerTest {
         private MockMvc mockMvc;
 
         @Autowired
+        private UserTokenRepository userTokenRepository;
+
+        @Autowired
         private AddressRepository addressRepository;
 
         @Autowired
@@ -51,6 +55,7 @@ public class AddressControllerTest {
 
         @BeforeEach
         void setUp() {
+                userTokenRepository.deleteAll();
                 addressRepository.deleteAll();
                 contactRepository.deleteAll();
                 userRepository.deleteAll();
@@ -62,6 +67,7 @@ public class AddressControllerTest {
                 user.setEmail("test@test.com");
                 user.setToken("test");
                 user.setTokenExpiredAt(Instant.now().toEpochMilli() + 1000000000L);
+                user.setIsVerified(true);
                 userRepository.save(user);
 
                 Contact contact = new Contact();
