@@ -10,6 +10,7 @@ import programmerzamannow.restful.entity.User;
 import programmerzamannow.restful.model.PaginationResponse;
 import programmerzamannow.restful.model.SortResponse;
 import programmerzamannow.restful.model.WebResponse;
+import programmerzamannow.restful.model.contact.BulkDeleteRequest;
 import programmerzamannow.restful.model.contact.ContactResponse;
 import programmerzamannow.restful.model.contact.CreateContactRequest;
 import programmerzamannow.restful.model.contact.SearchContactRequest;
@@ -83,6 +84,13 @@ public class ContactController {
     @DeleteMapping("/{contactId}")
     public WebResponse<String> delete(User user, @PathVariable String contactId) {
         contactService.delete(user, contactId);
+
+        return WebResponse.<String>builder().data(null).build();
+    }
+
+    @DeleteMapping()
+    public WebResponse<String> bulkDelete(User user, @RequestBody BulkDeleteRequest request) {
+        contactService.bulkDelete(user, request);
 
         return WebResponse.<String>builder().data(null).build();
     }

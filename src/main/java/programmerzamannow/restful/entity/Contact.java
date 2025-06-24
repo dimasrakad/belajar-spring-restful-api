@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -45,7 +46,7 @@ public class Contact {
 
     private String email;
 
-    @OneToMany(mappedBy = "contact")
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.REMOVE)
     private List<Address> addresses;
 
     @Column(name = "created_at", nullable = false, updatable = false)

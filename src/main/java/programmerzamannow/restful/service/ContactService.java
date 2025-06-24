@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import jakarta.persistence.criteria.Predicate;
 import programmerzamannow.restful.entity.Contact;
 import programmerzamannow.restful.entity.User;
+import programmerzamannow.restful.model.contact.BulkDeleteRequest;
 import programmerzamannow.restful.model.contact.ContactResponse;
 import programmerzamannow.restful.model.contact.CreateContactRequest;
 import programmerzamannow.restful.model.contact.SearchContactRequest;
@@ -130,6 +131,19 @@ public class ContactService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found"));
 
         contactRepository.delete(contact);
+    }
+
+    @Transactional
+    public void bulkDelete(User user, BulkDeleteRequest request) {
+        validationService.validate(request);
+
+        List<Contact> contacts = contactRepository.findAllByUserAndIdIn(user, request.getIds());
+        System.out.println(request.getIds());
+        System.out.println(contacts);
+
+        contacts.forEach(contact -> {
+            contactRepository.delete(contact);
+        });
     }
 
     private ContactResponse toContactResponse(Contact contact) {

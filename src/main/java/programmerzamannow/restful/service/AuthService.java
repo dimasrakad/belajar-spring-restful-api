@@ -1,7 +1,6 @@
 package programmerzamannow.restful.service;
 
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
