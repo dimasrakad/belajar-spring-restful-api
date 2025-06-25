@@ -11,17 +11,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.WebResponse;
-import programmerzamannow.restful.model.user.LoginUserRequest;
-import programmerzamannow.restful.model.user.RegisterUserRequest;
-import programmerzamannow.restful.model.user.TokenResponse;
-import programmerzamannow.restful.model.user.UserResponse;
-import programmerzamannow.restful.repository.AddressRepository;
-import programmerzamannow.restful.repository.ContactRepository;
-import programmerzamannow.restful.repository.UserRepository;
-import programmerzamannow.restful.repository.UserTokenRepository;
-import programmerzamannow.restful.security.BCrypt;
+import programmerzamannow.restful.entities.User;
+import programmerzamannow.restful.models.WebResponse;
+import programmerzamannow.restful.models.users.LoginUserRequest;
+import programmerzamannow.restful.models.users.RegisterUserRequest;
+import programmerzamannow.restful.models.users.TokenResponse;
+import programmerzamannow.restful.models.users.UserResponse;
+import programmerzamannow.restful.repositories.AddressRepository;
+import programmerzamannow.restful.repositories.ContactRepository;
+import programmerzamannow.restful.repositories.UserRepository;
+import programmerzamannow.restful.repositories.UserTokenRepository;
+import programmerzamannow.restful.securities.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

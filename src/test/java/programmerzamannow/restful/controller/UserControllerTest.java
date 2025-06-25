@@ -17,14 +17,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Instant;
 
-import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.WebResponse;
-import programmerzamannow.restful.model.user.UpdateUserRequest;
-import programmerzamannow.restful.model.user.UserResponse;
-import programmerzamannow.restful.repository.AddressRepository;
-import programmerzamannow.restful.repository.ContactRepository;
-import programmerzamannow.restful.repository.UserRepository;
-import programmerzamannow.restful.security.BCrypt;
+import programmerzamannow.restful.entities.User;
+import programmerzamannow.restful.models.WebResponse;
+import programmerzamannow.restful.models.users.UpdateUserRequest;
+import programmerzamannow.restful.models.users.UserResponse;
+import programmerzamannow.restful.repositories.AddressRepository;
+import programmerzamannow.restful.repositories.ContactRepository;
+import programmerzamannow.restful.repositories.UserRepository;
+import programmerzamannow.restful.securities.BCrypt;
 
 @SpringBootTest
 @AutoConfigureMockMvc

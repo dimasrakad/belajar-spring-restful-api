@@ -9,17 +9,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import programmerzamannow.restful.entity.Contact;
-import programmerzamannow.restful.entity.User;
-import programmerzamannow.restful.model.WebResponse;
-import programmerzamannow.restful.model.contact.ContactResponse;
-import programmerzamannow.restful.model.contact.CreateContactRequest;
-import programmerzamannow.restful.model.contact.UpdateContactRequest;
-import programmerzamannow.restful.repository.AddressRepository;
-import programmerzamannow.restful.repository.ContactRepository;
-import programmerzamannow.restful.repository.UserRepository;
-import programmerzamannow.restful.repository.UserTokenRepository;
-import programmerzamannow.restful.security.BCrypt;
+import programmerzamannow.restful.entities.Contact;
+import programmerzamannow.restful.entities.User;
+import programmerzamannow.restful.models.WebResponse;
+import programmerzamannow.restful.models.contacts.ContactResponse;
+import programmerzamannow.restful.models.contacts.CreateContactRequest;
+import programmerzamannow.restful.models.contacts.UpdateContactRequest;
+import programmerzamannow.restful.repositories.AddressRepository;
+import programmerzamannow.restful.repositories.ContactRepository;
+import programmerzamannow.restful.repositories.UserRepository;
+import programmerzamannow.restful.repositories.UserTokenRepository;
+import programmerzamannow.restful.securities.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
