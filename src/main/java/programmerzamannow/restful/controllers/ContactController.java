@@ -40,6 +40,8 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
+    final String photoPath = "/photo";
+
     @PostMapping
     public WebResponse<ContactResponse> create(User user, @RequestBody CreateContactRequest request) {
         ContactResponse response = contactService.create(user, request);
@@ -54,7 +56,7 @@ public class ContactController {
         return WebResponse.<ContactResponse>builder().data(response).build();
     }
 
-    @PostMapping(path = "/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = photoPath, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public WebResponse<ContactResponse> storePhoto(User user, @RequestPart String id, @RequestPart MultipartFile file) {
         ContactResponse response;
         try {
@@ -66,13 +68,13 @@ public class ContactController {
         return WebResponse.<ContactResponse>builder().data(response).build();
     }
 
-    @GetMapping("/photo/{photo}")
+    @GetMapping(photoPath + "/{photo}")
     public ResponseEntity<Resource> getPhoto(User user, @PathVariable String photo) {
         Resource resource = contactService.getPhoto(user, photo);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
     }
 
-    @DeleteMapping("/photo/{photo}")
+    @DeleteMapping(photoPath + "/{photo}")
     public WebResponse<String> deletePhoto(User user, @PathVariable String photo) {
         contactService.deletePhoto(user, photo);
 

@@ -26,4 +26,6 @@ public class UpdateContactRequest {
     @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
     @Size(max = 100)
     private String phone;
+
+    private Long categoryId;
 }

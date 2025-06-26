@@ -52,6 +52,10 @@ public class Contact {
     @OneToMany(mappedBy = "contact", cascade = CascadeType.REMOVE)
     private List<Address> addresses;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private ContactCategory contactCategory;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;

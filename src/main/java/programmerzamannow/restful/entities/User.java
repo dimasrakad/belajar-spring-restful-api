@@ -68,6 +68,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Contact> contacts;
 
+    @OneToMany(mappedBy = "user")
+    private List<ContactCategory> categories;
+
     @PostLoad
     void loadOldValues() {
         this.oldEmail = this.email;

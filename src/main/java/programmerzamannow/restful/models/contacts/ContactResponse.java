@@ -16,4 +16,6 @@ public class ContactResponse {
     private String email;
     private String phone;
     private String photoPath;
+    private Long categoryId;
+    private String categoryName;
 }

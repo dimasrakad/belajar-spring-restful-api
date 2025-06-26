@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.transaction.Transactional;
 import jakarta.persistence.criteria.Predicate;
 import programmerzamannow.restful.entities.Contact;
+import programmerzamannow.restful.entities.ContactCategory;
 import programmerzamannow.restful.entities.User;
 import programmerzamannow.restful.models.contacts.ContactResponse;
 import programmerzamannow.restful.models.contacts.CreateContactRequest;
@@ -33,6 +34,7 @@ import programmerzamannow.restful.models.contacts.SearchContactRequest;
 import programmerzamannow.restful.models.contacts.SelectContactsRequest;
 import programmerzamannow.restful.models.contacts.UpdateContactRequest;
 import programmerzamannow.restful.properties.PhotoStorageProperties;
+import programmerzamannow.restful.repositories.ContactCategoryRepository;
 import programmerzamannow.restful.repositories.ContactRepository;
 import programmerzamannow.restful.util.ObjectUtil;
 import programmerzamannow.restful.util.SpecificationUtil;
@@ -41,6 +43,9 @@ import programmerzamannow.restful.util.SpecificationUtil;
 public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
+
+    @Autowired
+    private ContactCategoryRepository contactCategoryRepository;
 
     @Autowired
     private ValidationService validationService;
@@ -61,12 +66,21 @@ public class ContactService {
     public ContactResponse create(User user, CreateContactRequest request) {
         validationService.validate(request);
 
+        ContactCategory contactCategory = null;
+
+        if (request.getCategoryId() != null) {
+            contactCategory = contactCategoryRepository
+                    .findFirstByUserAndId(user, request.getCategoryId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        }
+
         Contact contact = new Contact();
         contact.setId(UUID.randomUUID().toString());
         contact.setFirstName(request.getFirstName());
         contact.setLastName(request.getLastName());
         contact.setEmail(request.getEmail());
         contact.setPhone(request.getPhone());
+        ObjectUtil.setIfNotNull(contactCategory, contact::setContactCategory);
         contact.setUser(user);
 
         contactRepository.save(contact);
@@ -171,10 +185,19 @@ public class ContactService {
         Contact contact = contactRepository.findFirstByUserAndId(user, id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found"));
 
+        ContactCategory contactCategory = null;
+
+        if (request.getCategoryId() != null) {
+            contactCategory = contactCategoryRepository
+                    .findFirstByUserAndId(user, request.getCategoryId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        }
+
         ObjectUtil.setIfNotNull(request.getFirstName(), contact::setFirstName);
         ObjectUtil.setIfNotNull(request.getLastName(), contact::setLastName);
         ObjectUtil.setIfNotNull(request.getEmail(), contact::setEmail);
         ObjectUtil.setIfNotNull(request.getPhone(), contact::setPhone);
+        ObjectUtil.setIfNotNull(contactCategory, contact::setContactCategory);
 
         contactRepository.save(contact);
 
@@ -247,7 +270,7 @@ public class ContactService {
 
         contacts.forEach(contact -> {
             deletePhotoIfExist(contact);
-            
+
             contactRepository.delete(contact);
         });
     }
@@ -265,6 +288,8 @@ public class ContactService {
                 .photoPath(
                         (contact.getPhoto() != null && !contact.getPhoto().isEmpty()) ? url + contact.getPhoto()
                                 : null)
+                .categoryId(contact.getContactCategory().getId())
+                .categoryName(contact.getContactCategory().getName())
                 .build();
     }
 
