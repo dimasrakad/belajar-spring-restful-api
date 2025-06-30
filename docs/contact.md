@@ -15,7 +15,8 @@ Request Body:
   "firstName": "firstName",
   "lastName": "lastName",
   "email": "email",
-  "phone": "phone"
+  "phone": "phone",
+  "categoryId": "categoryId" // optional
 }
 ```
 
@@ -28,7 +29,9 @@ Response Body (Success):
     "firstName": "firstName",
     "lastName": "lastName",
     "email": "email",
-    "phone": "phone"
+    "phone": "phone",
+    "categoryId": "categoryId",
+    "categoryName": "categoryName"
   }
 }
 ```
@@ -56,7 +59,8 @@ Request Body:
   "firstName": "firstName",
   "lastName": "lastName",
   "email": "email",
-  "phone": "phone"
+  "phone": "phone",
+  "categoryId": "categoryId" // optional
 }
 ```
 
@@ -69,7 +73,9 @@ Response Body (Success):
     "firstName": "firstName",
     "lastName": "lastName",
     "email": "email",
-    "phone": "phone"
+    "phone": "phone",
+    "categoryId": "categoryId",
+    "categoryName": "categoryName"
   }
 }
 ```
@@ -99,7 +105,9 @@ Response Body (Success):
     "firstName": "firstName",
     "lastName": "lastName",
     "email": "email",
-    "phone": "phone"
+    "phone": "phone",
+    "categoryId": "categoryId",
+    "categoryName": "categoryName"
   }
 }
 ```
@@ -140,14 +148,18 @@ Response Body (Success):
       "firstName": "firstName",
       "lastName": "lastName",
       "email": "email",
-      "phone": "phone"
+      "phone": "phone",
+      "categoryId": "categoryId",
+      "categoryName": "categoryName"
     },
     {
       "id": "id", // random string
       "firstName": "firstName",
       "lastName": "lastName",
       "email": "email",
-      "phone": "phone"
+      "phone": "phone",
+      "categoryId": "categoryId",
+      "categoryName": "categoryName"
     }
   ],
   "pagination": {
